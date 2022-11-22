@@ -24,6 +24,8 @@ def main():
             response.raise_for_status()
             user_reviews = response.json()
 
+            print(user_reviews)
+
             if user_reviews['status'] == 'timeout':
                 params = {
                     'timestamp': user_reviews['timestamp_to_request']
@@ -34,27 +36,26 @@ def main():
                     'timestamp': user_reviews['last_attempt_timestamp']
                 }
 
-            for attempt in user_reviews['new_attempts']:
-                if attempt['is_negative']:
-                    lesson_status = 'К сожалению в работе нашлись ошибки.'
-                    lesson = f'Урок: {attempt["lesson_title"]} - {attempt["lesson_url"]}'
-                    message = f'Преподаватель проверил работу.{lesson_status} {lesson}'
+                for attempt in user_reviews['new_attempts']:
+                    if attempt['is_negative']:
+                        lesson_status = 'К сожалению в работе нашлись ошибки.'
+                        lesson = f'Урок: {attempt["lesson_title"]} - {attempt["lesson_url"]}'
+                        message = f'Преподаватель проверил работу.{lesson_status} {lesson}'
 
-                    bot.send_message(chat_id=tg_chat_id, text=message)
+                        bot.send_message(chat_id=tg_chat_id, text=message)
 
-                else:
-                    lesson_status = 'В вашей работе нет ошибок! Поздравляем!'
-                    lesson = f'Урок: {attempt["lesson_title"]} - {attempt["lesson_url"]}'
-                    message = f'Преподаватель проверил работу. \
-                    {lesson_status} {lesson}'
+                    else:
+                        lesson_status = 'В вашей работе нет ошибок! Поздравляем!'
+                        lesson = f'Урок: {attempt["lesson_title"]} - {attempt["lesson_url"]}'
+                        message = f'Преподаватель проверил работу. \
+                        {lesson_status} {lesson}'
 
-                    bot.send_message(chat_id=tg_chat_id, text=message)
+                        bot.send_message(chat_id=tg_chat_id, text=message)
 
-        except requests.exceptions.ReadTimeout as e:
-            sleep(30)
-            print('Нет ответа от сервера')
+        except requests.exceptions.ReadTimeout:
+            continue
 
-        except requests.ConnectionError as e:
+        except requests.ConnectionError:
             sleep(30)
             print('Ошибка подключения к серверу')
 
