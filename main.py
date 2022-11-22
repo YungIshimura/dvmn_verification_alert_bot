@@ -28,7 +28,7 @@ def get_user_reviews_and_send_message(headers, params):
                     lesson = f'Урок: {attempt["lesson_title"]} - {attempt["lesson_url"]}'
                     message = f'Преподаватель проверил работу.{lesson_status} {lesson}'
 
-                    bot.send_message(chat_id=chat_id, text=message)
+                    bot.send_message(chat_id=tg_chat_id, text=message)
 
                 else:
                     lesson_status = 'В вашей работе нет ошибок! Поздравляем!'
@@ -36,7 +36,7 @@ def get_user_reviews_and_send_message(headers, params):
                     message = f'Преподаватель проверил работу. \
                     {lesson_status} {lesson}'
 
-                    bot.send_message(chat_id=chat_id, text=message)
+                    bot.send_message(chat_id=tg_chat_id, text=message)
 
         except requests.exceptions.ReadTimeout as e:
             sleep(30)
@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
     dvmn_authorization_token = env('DVMN_AUTHORIZATION_TOKEN')
     tg_bot_api_key = env('TG_BOT_API_KEY')
-    chat_id = env('CHAT_ID')
+    tg_chat_id = env('CHAT_ID')
 
     bot = telegram.Bot(token=tg_bot_api_key)
 
