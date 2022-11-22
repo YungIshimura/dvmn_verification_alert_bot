@@ -4,7 +4,19 @@ import telegram
 from time import sleep
 
 
-def get_user_reviews_and_send_message(headers, params):
+def main():
+    env = Env()
+    env.read_env()
+
+    dvmn_authorization_token = env('DVMN_AUTHORIZATION_TOKEN')
+    tg_bot_api_key = env('TG_BOT_API_KEY')
+    tg_chat_id = env('TG_CHAT_ID')
+
+    bot = telegram.Bot(token=tg_bot_api_key)
+
+    params = {}
+    headers = {'Authorization': f'Token {dvmn_authorization_token}'}
+
     while True:
         try:
             response = requests.get(
@@ -48,15 +60,4 @@ def get_user_reviews_and_send_message(headers, params):
 
 
 if __name__ == '__main__':
-    env = Env()
-    env.read_env()
-
-    dvmn_authorization_token = env('DVMN_AUTHORIZATION_TOKEN')
-    tg_bot_api_key = env('TG_BOT_API_KEY')
-    tg_chat_id = env('TG_CHAT_ID')
-
-    bot = telegram.Bot(token=tg_bot_api_key)
-
-    params = {}
-    headers = {'Authorization': f'Token {dvmn_authorization_token}'}
-    get_user_reviews_and_send_message(headers, params)
+    main()
