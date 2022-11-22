@@ -26,15 +26,14 @@ def get_user_reviews_and_send_message(headers, params):
                 if attempt['is_negative']:
                     lesson_status = 'К сожалению в работе нашлись ошибки.'
                     lesson = f'Урок: {attempt["lesson_title"]} - {attempt["lesson_url"]}'
-                    message = f'Преподаватель проверил работу.\
-                    {lesson_status} {lesson}'
+                    message = f'Преподаватель проверил работу.{lesson_status} {lesson}'
 
                     bot.send_message(chat_id=chat_id, text=message)
 
                 else:
                     lesson_status = 'В вашей работе нет ошибок! Поздравляем!'
                     lesson = f'Урок: {attempt["lesson_title"]} - {attempt["lesson_url"]}'
-                    message = f'Преподаватель проверил работу.\
+                    message = f'Преподаватель проверил работу. \
                     {lesson_status} {lesson}'
 
                     bot.send_message(chat_id=chat_id, text=message)
