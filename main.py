@@ -1,7 +1,20 @@
-import requests
-from environs import Env
-import telegram
+import logging
 from time import sleep
+
+import requests
+import telegram
+from environs import Env
+
+
+class TelegramLogsHandler(logging.Handler):
+    def __init__(self, tg_bot: telegram.Bot, chat_id: int):
+        super().__init__()
+        self.chat_id = chat_id
+        self.tg_bot = tg_bot
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
 
 
 def main():
@@ -17,14 +30,20 @@ def main():
     params = {}
     headers = {'Authorization': f'Token {dvmn_authorization_token}'}
 
+    logging.basicConfig(
+        format="%(asctime)s: %(levelname)s: %(message)s"
+    )
+    logger = logging.getLogger('Logger')
+    logger.setLevel(logging.WARNING)
+    logger.addHandler(TelegramLogsHandler(tg_bot=bot, chat_id=tg_chat_id))
+    logger.warning("Бот запущен")
+
     while True:
         try:
             response = requests.get(
                 'https://dvmn.org/api/long_polling/', headers=headers, params=params)
             response.raise_for_status()
             user_reviews = response.json()
-
-            print(user_reviews)
 
             if user_reviews['status'] == 'timeout':
                 params = {
@@ -53,11 +72,12 @@ def main():
                         bot.send_message(chat_id=tg_chat_id, text=message)
 
         except requests.exceptions.ReadTimeout:
+            logger.error('Отсутсвует подключение к серверу')
             continue
 
         except requests.ConnectionError:
             sleep(30)
-            print('Ошибка подключения к серверу')
+            logger.error('Ошибка подключения к серверу')
 
 
 if __name__ == '__main__':
