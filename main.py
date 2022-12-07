@@ -33,7 +33,7 @@ def main():
     logging.basicConfig(
         format="%(asctime)s: %(levelname)s: %(message)s"
     )
-    logger = logging.getLogger('Logger')
+    logger = logging.getLogger('tg_dvmn_alert')
     logger.setLevel(logging.WARNING)
     logger.addHandler(TelegramLogsHandler(tg_bot=bot, chat_id=tg_chat_id))
     logger.warning("Бот запущен")
