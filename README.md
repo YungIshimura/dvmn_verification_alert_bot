@@ -40,3 +40,14 @@ python3 main.py
 ## Пример работы
                                       
 ![Пример работы](https://user-images.githubusercontent.com/83189636/203260311-34270671-3676-4a0e-8b26-ffec401cd819.gif)
+
+## Также в проекте используется Docker
+Для создания образа контейнера у вас должен быть установлен Docker.
+Далее перейдите к папке проекта и введите команду 
+```bash
+docker build -t dvmn_alert .
+```
+Далее запустите контейнер
+```bash 
+docker run -d --env-file .env dvmn_alert
+```
